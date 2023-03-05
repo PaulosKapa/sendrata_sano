@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body onload="add_level()">
+<body onload="add_level(), add_input()">
     <div id="container">
         <div id="levels">
             
@@ -16,7 +16,7 @@
         </div>
         <div id="buttons">
             <div id="add_item">
-                <button onclick="add_level()">ADD LEVEL</button>
+                <button onclick="add_level(), add_input()">ADD LEVEL</button>
             </div>
         </div>
     </div>
@@ -26,22 +26,48 @@
     let lvl = 1;
     function add_level(){
         //make level into a string
-        let text_content = "level" + lvl
+        let text_content = "level" + lvl;
         //create a p element to output the current level
-        let new_level = document.createElement("p")
+        let new_level = document.createElement("p");
         //create a input element to write
-        let new_label = document.createElement("input")
+        let new_label = document.createElement("input");
         //the text to use in the new_level element
-        let text = document.createTextNode(text_content)
+        let text = document.createTextNode(text_content);
         //get the id of the levels
         let level_id = document.getElementById("levels");
-        //add the text (i.e.: level1) to the 
-        new_level.appendChild(text)
-        level_id.appendChild(new_level)
-        level_id.appendChild(new_label)
-        new_level.classList.add("level")
-        new_input.classList.add()
+        //add the text (i.e.: level1) to the new_level element
+        new_level.appendChild(text);
+        //add the new_level element to the level_id 
+        level_id.appendChild(new_level);
+        //add a class to new_level
+        new_level.classList.add("level");
         lvl += 1;
     }
+    function add_input(){
+        //create a input element to write
+        let new_label = document.createElement("input");
+        //get the id of the levels
+        let input_id = document.getElementById("desc");
+        //add the new_label element to the level_id 
+        input_id.appendChild(new_label);
+        //add a class to new_label
+        new_label.classList.add("input_desc");
+    }
 </script>
+<style>
+    #container{
+        display: inline;
+    }
+    .level{
+        color: aqua;
+        position: relative;
+        left: auto;
+    }
+    .input_desc{
+        color: aqua;
+        position: relative;
+        left: auto;
+        bottom: auto;
+    }
+</style>
 </html>
