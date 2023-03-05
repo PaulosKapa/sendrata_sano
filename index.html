@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body onload="add_level()">
+    <div id="container">
+        <div id="levels">
+            
+        </div>
+        <div id="desc">
+
+        </div>
+        <div id="buttons">
+            <div id="add_item">
+                <button onclick="add_level()">ADD LEVEL</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    //check how many levels we have
+    let lvl = 1;
+    function add_level(){
+        //make level into a string
+        let text_content = "level" + lvl
+        //create a p element to output the current level
+        let new_level = document.createElement("p")
+        //create a input element to write
+        let new_label = document.createElement("input")
+        //the text to use in the new_level element
+        let text = document.createTextNode(text_content)
+        //get the id of the levels
+        let level_id = document.getElementById("levels");
+        //add the text (i.e.: level1) to the 
+        new_level.appendChild(text)
+        level_id.appendChild(new_level)
+        level_id.appendChild(new_label)
+        new_level.classList.add("level")
+        new_input.classList.add()
+        lvl += 1;
+    }
+</script>
+</html>
