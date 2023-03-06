@@ -6,65 +6,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body onload="add_level(), add_input()">
+<body onload="add_label(), add_level()">
     <div id="container">
         <div id="levels">
             
         </div>
-        <div id="desc">
-
-        </div>
         <div id="buttons">
             <div id="add_item">
-                <button onclick="add_level(), add_input()">ADD LEVEL</button>
+                <button onclick="add_label(), add_level()">ADD LEVEL</button>
             </div>
         </div>
     </div>
 </body>
 <script>
     //check how many levels we have
-    let lvl = 1;
+    var lvl = 0;
     function add_level(){
         //make level into a string
-        let text_content = "level" + lvl;
-        //create a p element to output the current level
-        let new_level = document.createElement("p");
-        //create a input element to write
-        let new_label = document.createElement("input");
-        //the text to use in the new_level element
-        let text = document.createTextNode(text_content);
+        let text_content = "level" + lvl;      
+        //create a input element to output the current level
+        let new_level = document.createElement("input");
+        //set the type of the new_level
+        new_level.type="radio";
         //get the id of the levels
-        let level_id = document.getElementById("levels");
-        //add the text (i.e.: level1) to the new_level element
-        new_level.appendChild(text);
+        let level_id = document.getElementById(text_content);
         //add the new_level element to the level_id 
         level_id.appendChild(new_level);
         //add a class to new_level
         new_level.classList.add("level");
+        //add name attribute so it doesn't let to check multiple radios
+        new_level.setAttribute("name", "checker");
+        //add a new level
         lvl += 1;
+        if(lvl==2){
+            alert("From this level and forward only responders can read your information");
+        }
     }
-    function add_input(){
-        //create a input element to write
-        let new_label = document.createElement("input");
-        //get the id of the levels
-        let input_id = document.getElementById("desc");
-        //add the new_label element to the level_id 
+    function add_label(){
+        let new_label = document.createElement("label");
+        //make level into a string
+        let text_content = "level" + lvl;
+        //the text to use in the new_level element
+        let text = document.createTextNode(text_content);
+        //search for the desc element
+        let input_id = document.getElementById("levels");
+        //add new_label to input_id
         input_id.appendChild(new_label);
-        //add a class to new_label
-        new_label.classList.add("input_desc");
-    }
+        //set the id to new_label
+        new_label.setAttribute("id", text_content)
+        //add the text (i.e.: level1) to the new_level element
+        new_label.appendChild(text);
+}
+//add a func every time you click a radi, add the attribbute every time you instance it 
 </script>
 <style>
     #container{
         display: inline;
     }
     .level{
-        color: aqua;
         position: relative;
         left: auto;
     }
     .input_desc{
-        color: aqua;
         position: relative;
         left: auto;
         bottom: auto;
