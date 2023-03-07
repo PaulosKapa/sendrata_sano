@@ -6,21 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body onload="add_label(), add_level()">
+<body onload="add_label(), add_level(), get_level(), add_item_level()">
     <div id="container">
         <div id="levels">
             
         </div>
         <div id="buttons">
             <div id="add_item">
-                <button onclick="add_label(), add_level()">ADD LEVEL</button>
+                <button onclick="add_label(), add_level(), get_level(), add_item_level()">ADD LEVEL</button>
+                <button onclick="add_to_list()">ADD ITEM</button>
             </div>
+        </div>
+        <div id="text">
+            <input type="text" id="item" name="fname" value="" placeholder="add item">
+        </div>
+        <div id="ol_list">
         </div>
     </div>
 </body>
 <script>
     //check how many levels we have
     var lvl = 0;
+    //make a new array
+    var output=[];
+    //add a new radio inside the label (add_label) and increase the lvl by 1
     function add_level(){
         //make level into a string
         let text_content = "level" + lvl;      
@@ -36,12 +45,25 @@
         new_level.classList.add("level");
         //add name attribute so it doesn't let to check multiple radios
         new_level.setAttribute("name", "checker");
+        //add the value attribut
+        new_level.setAttribute("value", text_content);
+        //add the get_level function
+        new_level.setAttribute("onclick", "get_level()");
+        new_level.setAttribute("onclick", "delete_text()");
+        //check the new radio
+        new_level.checked=true;
+        //get the element with the id item
+        let text = document.getElementById("item");
+        //delete text.value
+        text.value="";
         //add a new level
         lvl += 1;
         if(lvl==2){
-            alert("From this level and forward only responders can read your information");
+            //uncomment this
+       //     alert("From this level and forward only responders can read your information");
         }
     }
+    //add the label to the level radio
     function add_label(){
         let new_label = document.createElement("label");
         //make level into a string
@@ -56,6 +78,68 @@
         new_label.setAttribute("id", text_content)
         //add the text (i.e.: level1) to the new_level element
         new_label.appendChild(text);
+}
+//add an item to a list
+function add_to_list(){
+    let item_list =  "item_list"+output;
+    //create a list item
+    let node = document.createElement("li");
+    //set the class of node
+    node.setAttribute("class","list_item");
+    //get the element with the id item
+    let text = document.getElementById("item");
+    //create a text using the value if the input
+    let textnode = document.createTextNode(text.value);
+    if (text.value == ""){
+        //if text.value is nothing do nothing
+    }
+    else{
+        //add the textnode to the node
+        node.appendChild(textnode);
+        //get the element with the is item_list and add node as a child
+        document.getElementById(item_list).appendChild(node);
+        //make the value of the item zero
+        text.value="";}
+
+}
+//get the current level we are in
+function get_level(){
+    //get the name of the radio that is pressed
+    let level_value = document.querySelectorAll('input[name="checker"]:checked');
+    //add the level_value.value to the output
+    output = []
+    for (let i = 0; i < level_value.length; i++) {
+        output.push(level_value[i].value);
+    }
+    console.log(output); 
+}
+//get the current level we are in and add a new item to the list of that level
+function add_item_level(){
+        //set the item_list to a string
+        let item_list = "item_list" + output;
+        //create a list 
+        let new_list = document.createElement("ol");
+        //create a list item
+        let new_level = document.createElement("li");
+        //add a new text node
+        let new_level_text = document.createTextNode(output);
+        //add that text node to a list item
+        new_level.appendChild(new_level_text);
+        //set the id of the list to item_list
+        new_list.setAttribute("id", item_list);
+        //get the id of ol_list
+        let ol_list = document.getElementById("ol_list");
+        //add new_list to ol_list
+        ol_list.appendChild(new_list);
+        //add new_level under new_list
+        new_list.appendChild(new_level);
+
+}
+function delete_text(){
+        //get the element with the id item
+        let text = document.getElementById("item");
+        //delete text.value
+        text.value="";
 }
 //add a func every time you click a radi, add the attribbute every time you instance it 
 </script>
