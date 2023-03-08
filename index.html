@@ -4,24 +4,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sendrata Sano</title>
 </head>
-<body onload="add_label(), add_level(), get_level(), add_item_level()">
+<body onload="drop_or_input_func(), add_label(), add_level(), get_level(), add_item_level()">
     <div id="container">
         <div id="levels">
             
         </div>
         <div id="buttons">
             <div id="add_item">
-                <button onclick="add_label(), add_level(), get_level(), add_item_level()">ADD LEVEL</button>
+                <button onclick="drop_or_input_func(), add_label(), add_level(), get_level(), add_item_level()">ADD LEVEL</button>
                 <button onclick="add_to_list()">ADD ITEM</button>
             </div>
         </div>
-        <div id="text">
-            <input type="text" id="item" name="fname" value="" placeholder="add item">
+        <div id="item_selector">
+            <select name="selector" id="item_list_selector">
+                <option value="blood_type" onclick="drop_or_input_func(), choose()">blood_type</option>
+                <option value="description" onclick="drop_or_input_func(), choose()">description</option>
+            </select>
         </div>
-        <div id="ol_list">
-        </div>
+        <div id="text"></div>
+        <div id="ol_list"></div>
+        <div id="dropdown_menu"></div>
     </div>
 </body>
 <script>
@@ -30,7 +34,10 @@
     //make a new array
     var output=[];
     //add a new radio inside the label (add_label) and increase the lvl by 1
+    //check if we need a dropdown menu or description
+    var drop_or_input;
     function add_level(){
+        choose();
         //make level into a string
         let text_content = "level" + lvl;      
         //create a input element to output the current level
@@ -47,16 +54,17 @@
         new_level.setAttribute("name", "checker");
         //add the value attribut
         new_level.setAttribute("value", text_content);
-        //add the get_level function
-        new_level.setAttribute("onclick", "get_level()");
-        new_level.setAttribute("onclick", "delete_text()");
+        //add functions to the radio button
+        new_level.setAttribute("onclick", "get_level()", "delete_text()");
         //check the new radio
         new_level.checked=true;
-        //get the element with the id item
-        let text = document.getElementById("item");
-        //delete text.value
-        text.value="";
-        //add a new level
+        //get the element with the id item if drop_or_input==input
+        if(drop_or_input == "input"){
+            let text = document.getElementById("item");
+            //delete text.value
+            text.value="";
+            //add a new level
+        }
         lvl += 1;
         if(lvl==2){
             //uncomment this
@@ -86,21 +94,36 @@ function add_to_list(){
     let node = document.createElement("li");
     //set the class of node
     node.setAttribute("class","list_item");
-    //get the element with the id item
-    let text = document.getElementById("item");
-    //create a text using the value if the input
-    let textnode = document.createTextNode(text.value);
-    if (text.value == ""){
-        //if text.value is nothing do nothing
+    //get the element with the id item if drop_or_input == input
+    if(drop_or_input == "input"){
+        let text = document.getElementById("item");
+        //create a text using the value if the input
+        let textnode = document.createTextNode(text.value);
+        if (text.value == ""){
+            //if text.value is nothing do nothing
+        }
+        else{
+            //add the textnode to the node
+            node.appendChild(textnode);
+            //get the element with the is item_list and add node as a child
+            document.getElementById(item_list).appendChild(node);
+            //make the value of the item zero
+            text.value="";
+        }
     }
+    //get the element with the id drop menu if the drop_or_input = drop
     else{
+        let choise = document.getElementById("drop_menu");
+        //get the text of the selected option
+        let choise_value = choise.options[choise.selectedIndex].text
+        //create a text using the value if the input
+        let textnode = document.createTextNode(choise_value);
         //add the textnode to the node
         node.appendChild(textnode);
         //get the element with the is item_list and add node as a child
         document.getElementById(item_list).appendChild(node);
-        //make the value of the item zero
-        text.value="";}
 
+    }
 }
 //get the current level we are in
 function get_level(){
@@ -112,6 +135,7 @@ function get_level(){
         output.push(level_value[i].value);
     }
     console.log(output); 
+    //call the dropdown function
 }
 //get the current level we are in and add a new item to the list of that level
 function add_item_level(){
@@ -133,15 +157,83 @@ function add_item_level(){
         ol_list.appendChild(new_list);
         //add new_level under new_list
         new_list.appendChild(new_level);
-
 }
+//delete the text of the input
 function delete_text(){
         //get the element with the id item
-        let text = document.getElementById("item");
-        //delete text.value
-        text.value="";
+        if(drop_or_input == "input"){
+            let text = document.getElementById("item");
+            //delete text.value
+            text.value="";
+    }
 }
-//add a func every time you click a radi, add the attribbute every time you instance it 
+//make a dropdown menu or input dialog according to the item_selector
+function choose(){
+    //create a input tag and edit its attributes
+    let input = document.createElement("input");
+    input.setAttribute("type", "text");
+    input.setAttribute("id", "item");
+    input.setAttribute("name", "fname");
+    input.setAttribute("value", "");
+    input.setAttribute("placeholder", "add item");
+    //get element with id text
+    let text_input = document.getElementById("text")
+    text_input.appendChild(input);
+    //get the element with id dropdown_menu
+    let menu_drop = document.getElementById("dropdown_menu");
+    //add a select element
+    let drop_menu = document.createElement("select");
+    //set the name and id of the drop menu
+    drop_menu.setAttribute("id", "drop_menu");
+    drop_menu.setAttribute("name", "drop_list");
+    //add option elements
+    let option1 = document.createElement("option");
+    let option2 = document.createElement("option");
+    let option3 = document.createElement("option");
+    if(menu_drop.hasChildNodes()){
+        //if it has children, delete them
+        let first_child = menu_drop.firstChild;
+        first_child.remove();
+    }
+    if(text_input.hasChildNodes()){
+        //if it has children, delete them
+        let first_child = text_input.firstChild;
+        first_child.remove();
+    }
+    if(drop_or_input == "drop"){
+        //add values and text to options based on the output
+        option1.setAttribute("value", "A");
+        let text1 = document.createTextNode("A");
+        option1.appendChild(text1);
+        drop_menu.appendChild(option1);
+        menu_drop.appendChild(drop_menu);
+        if(text_input.hasChildNodes()){
+        //if it has children, delete them
+            let first_child = text_input.firstChild;
+            first_child.remove();
+    }
+    }
+    else{
+        text_input.appendChild(input);
+        if(menu_drop.hasChildNodes()){
+        //if it has children, delete them
+        let first_child = menu_drop.firstChild;
+        first_child.remove();
+    }
+    }
+}
+function drop_or_input_func(){
+    //get the element with id item_list_selector
+    let select_menu_drop = document.getElementById("item_list_selector")
+    let selected_value = select_menu_drop.options[select_menu_drop.selectedIndex].value
+    if(selected_value == "blood_type"){
+        drop_or_input = "drop";
+    }
+    else if(selected_value == "description"){
+        drop_or_input = "input";
+    }
+    console.log(drop_or_input);
+}
 </script>
 <style>
     #container{
@@ -158,3 +250,7 @@ function delete_text(){
     }
 </style>
 </html>
+<!--to do list: 
+add a drop down menu with multiple choises (name, blood level etc...), with restrictions to add them only one time
+delete levels and list items
+add a cookie to send the values to php-->
