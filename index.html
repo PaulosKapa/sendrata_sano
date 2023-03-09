@@ -15,6 +15,9 @@
             <div id="add_item">
                 <button onclick="drop_or_input_func(), add_label(), add_level(), get_level(), add_item_level()">ADD LEVEL</button>
                 <button onclick="add_to_list()">ADD ITEM</button>
+                <button onclick="remove_from_list()">REMOVE ITEM</button>
+                <button onclick="remove_level(), replace_lost()">REMOVE LEVEL</button>
+                <button onclick="submit_func()">SUBMIT</button>
             </div>
         </div>
         <div id="item_selector">
@@ -36,6 +39,9 @@
     //add a new radio inside the label (add_label) and increase the lvl by 1
     //check if we need a dropdown menu or description
     var drop_or_input;
+    //save the variables
+    var save = {};
+    var ArrayOfAllFoundVariables = [];
     function add_level(){
         choose();
         //make level into a string
@@ -71,6 +77,61 @@
        //     alert("From this level and forward only responders can read your information");
         }
     }
+    //remove the current level
+    function remove_level(){
+        //get the current lvl
+        let level_value=output[0];
+        //remove level from the string
+        let new_level_value = level_value.replace('level', '');
+        //turn the string to an int
+        let number_value = Number(new_level_value)
+        //only if number_value and lvl are greater than zero
+        if(number_value>0 && lvl>0){
+            let item_list =  "item_list"+output;
+            //get element by id item_list
+            let ol_list = document.getElementById(item_list);
+            //get the element by id output
+            let current_level = document.getElementById(output);
+            //decrease the current lvl by 1
+            let new_number_value = number_value -1;
+            //turn it to a string
+            let level_number_value = "level" + new_number_value
+            //get the elements with class level
+            let new_radio = document.getElementsByClassName("level");
+            //check the previous radio
+            new_radio[new_number_value].checked = true;
+            //remove radio and least
+            current_level.remove()
+            ol_list.remove()
+            //set a new current level
+            output[0]=level_number_value;
+            //decrease total levels
+            lvl-=1
+            
+    }
+}
+//when removing a level, check if this level was one of the middle ones. If so, change the serial numbers of the others to replace the order
+function replace_lost(){
+        let i;
+        //get the current lvl
+        let level_value=output[0];
+        //remove level from the string
+        let new_level_value = level_value.replace('level', '');
+        //turn the string to an int
+        let number_value = Number(new_level_value)
+        let number_search = "level" + (number_value + 1);
+        if(document.getElementById(number_search)==null && number_value+1<lvl){
+            for(i=0;i<lvl;i++){
+                let next_number_value = number_value + 2;
+                let label_id = "level" + next_number_value
+                let label_id_set = "level" + (number_value + 1)
+                let label_tag = document.getElementById(label_id)
+                label_tag.setAttribute("id", label_id_set)
+                label_tag.innerText = label_id_set
+                output[0]=label_id_set
+            }
+        }
+}
     //add the label to the level radio
     function add_label(){
         let new_label = document.createElement("label");
@@ -125,6 +186,23 @@ function add_to_list(){
 
     }
 }
+//get the current level and delete the last item of the list
+function remove_from_list(){
+    //get the current lvl
+    let item_list =  "item_list"+output;
+    //get element by id item_list
+    let ol_list = document.getElementById(item_list);
+    //find the text of the last child
+    let last_item = ol_list.lastChild.innerText;
+    //if it matches "level", dont delete it, otherwise delete it
+    if(last_item.indexOf("level")>-1){
+        
+    }
+    else{
+    ol_list.removeChild(ol_list.lastChild)
+    }
+    
+}
 //get the current level we are in
 function get_level(){
     //get the name of the radio that is pressed
@@ -134,7 +212,6 @@ function get_level(){
     for (let i = 0; i < level_value.length; i++) {
         output.push(level_value[i].value);
     }
-    console.log(output); 
     //call the dropdown function
 }
 //get the current level we are in and add a new item to the list of that level
@@ -158,6 +235,7 @@ function add_item_level(){
         //add new_level under new_list
         new_list.appendChild(new_level);
 }
+
 //delete the text of the input
 function delete_text(){
         //get the element with the id item
@@ -232,7 +310,45 @@ function drop_or_input_func(){
     else if(selected_value == "description"){
         drop_or_input = "input";
     }
-    console.log(drop_or_input);
+}
+//get the lists and turn them to arrays
+function submit_func(){
+    //get element with id ol_list
+    let list_initial = document.getElementById("ol_list");
+    //see how many children it has
+    let numb = list_initial.childElementCount;
+    let i, j;
+    //loop for how many chilren the list has
+    for(i=0; i<numb; i++){
+        //create a new variable
+        this["array"+i] = [];
+        //make a var to get the id we want
+        let tag_name = "item_listlevel" + i;
+        //check how many children the child node of the <ol> has
+        this["list_level"+i] = document.getElementById(tag_name).childElementCount;
+        //loop for how many children the <ol> has
+        for(j=0; j<this["list_level"+i]; j++){
+            //get the jth child node
+            this["repeat_list"+j] = document.getElementById(tag_name).childNodes[j];
+            //get the text
+            this["lists"+j] = this["repeat_list"+j].innerText
+            //save the text to the array
+            this["array"+i].push(this["lists"+j])
+            // document.cookie = "newarray = array1"
+            // let x = document.cookie;
+            // console.log(x);
+        }
+    }
+    //search for variables that start with array and end with a number 0-9
+     var pattern = /^array[0-9]+/;
+     //search everywhere
+     for (var varName in window) {
+        //if there is a match add it to the array
+         if (pattern.test(varName)) {
+            ArrayOfAllFoundVariables.push(window[varName]);
+        }
+    }
+    console.log(ArrayOfAllFoundVariables)
 }
 </script>
 <style>
