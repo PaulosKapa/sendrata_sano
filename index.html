@@ -16,7 +16,7 @@
                 <button onclick="drop_or_input_func(), add_label(), add_level(), get_level(), add_item_level()">ADD LEVEL</button>
                 <button onclick="add_to_list()">ADD ITEM</button>
                 <button onclick="remove_from_list()">REMOVE ITEM</button>
-                <button onclick="remove_level(), replace_lost()">REMOVE LEVEL</button>
+                <button onclick="remove_level()">REMOVE LEVEL</button>
                 <button onclick="submit_func()">SUBMIT</button>
             </div>
         </div>
@@ -85,8 +85,8 @@
         let new_level_value = level_value.replace('level', '');
         //turn the string to an int
         let number_value = Number(new_level_value)
-        //only if number_value and lvl are greater than zero
-        if(number_value>0 && lvl>0){
+        //only if number_value and lvl are greater than zero and the selected radio is the last one
+        if(number_value>0 && lvl>0 && number_value+1==lvl){
             let item_list =  "item_list"+output;
             //get element by id item_list
             let ol_list = document.getElementById(item_list);
@@ -111,27 +111,33 @@
     }
 }
 //when removing a level, check if this level was one of the middle ones. If so, change the serial numbers of the others to replace the order
-function replace_lost(){
-        let i;
-        //get the current lvl
-        let level_value=output[0];
-        //remove level from the string
-        let new_level_value = level_value.replace('level', '');
-        //turn the string to an int
-        let number_value = Number(new_level_value)
-        let number_search = "level" + (number_value + 1);
-        if(document.getElementById(number_search)==null && number_value+1<lvl){
-            for(i=0;i<lvl;i++){
-                let next_number_value = number_value + 2;
-                let label_id = "level" + next_number_value
-                let label_id_set = "level" + (number_value + 1)
-                let label_tag = document.getElementById(label_id)
-                label_tag.setAttribute("id", label_id_set)
-                label_tag.innerText = label_id_set
-                output[0]=label_id_set
-            }
-        }
-}
+// function replace_lost(){
+//         let i;
+//         //get the current lvl
+//         let level_value=output[0];
+//         //remove level from the string
+//         let new_level_value = level_value.replace('level', '');
+//         //turn the string to an int
+//         let number_value = Number(new_level_value)
+//          get the next level from the selected one
+//         let number_search = "level" + (number_value + 1);
+//          only if it is not the last element
+//         if(document.getElementById(number_search)==null && number_value+1<lvl){
+//             //for(i=0;i<lvl;i++){
+//                  //get the next radio
+//                 let next_number_value = number_value + 1;
+//                 let label_id = "level" + number_value
+//                 let label_id_set = "level" + (next_number_value)
+//                 console.log(output)
+//                 console.log(label_id_set)
+//                 let label_tag = document.getElementById(label_id)
+//                  set the attribute to the radio that was deleted
+//                 label_tag.setAttribute("id", label_id_set)
+//                 //label_tag.innerText = label_id_set
+//                 output[0]=label_id_set
+//             //}
+//         }
+// }
     //add the label to the level radio
     function add_label(){
         let new_label = document.createElement("label");
