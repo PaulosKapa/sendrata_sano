@@ -166,9 +166,12 @@ function add_to_list(){
     node.setAttribute("class","list_item");
     //get the element with the id item if drop_or_input == input
     if(drop_or_input == "input"){
+        let drop_description = document.getElementById("item_list_selector");
+        //get the selected option
+        let choise_description = drop_description.options[drop_description.selectedIndex].text      
         let text = document.getElementById("item");
         //create a text using the value if the input
-        let textnode = document.createTextNode(text.value);
+        let textnode = document.createTextNode(choise_description + ": " +  text.value);
         if (text.value == ""){
             //if text.value is nothing do nothing
         }
@@ -183,11 +186,15 @@ function add_to_list(){
     }
     //get the element with the id drop menu if the drop_or_input = drop
     else{
+        //get the element with id item list selector
+        let drop_description = document.getElementById("item_list_selector");
+        //get the selected option
+        let choise_description = drop_description.options[drop_description.selectedIndex].text        
         let choise = document.getElementById("drop_menu");
         //get the text of the selected option
         let choise_value = choise.options[choise.selectedIndex].text
-        //create a text using the value if the input
-        let textnode = document.createTextNode(choise_value);
+        //create a text using the value if the input + the option we chose
+        let textnode = document.createTextNode(choise_description +  ": "+choise_value);
         //add the textnode to the node
         node.appendChild(textnode);
         //get the element with the is item_list and add node as a child
@@ -237,7 +244,7 @@ function add_item_level(){
         new_level.appendChild(new_level_text);
         //set the id of the list to item_list
         new_list.setAttribute("id", item_list);
-        new_list.setAttribute("name", item_list);
+        //new_list.setAttribute("name", item_list);
         //get the id of ol_list
         let ol_list = document.getElementById("ol_list");
         //add new_list to ol_list
@@ -355,9 +362,10 @@ function submit_func(){
      for (var varName in window) {
         //if there is a match add it to the array
          if (pattern.test(varName)) {
-            if (window[varName].length>1){
+            //if the array has more than one element in it 
+            //if (window[varName].length>1){
                 ArrayOfAllFoundVariables.push(window[varName]);
-            }
+            //}
         }
     }
     document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+';' +"SameSite=Lax";
