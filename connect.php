@@ -30,7 +30,7 @@
             //echo $value; // I just did not use "htmlspecialchars()" function. 
         }
     }
-    $sql = "SELECT user_password from accounts where AID = $value";
+    $sql = "SELECT user_password from accounts where AID = '$aid'";
     $result = mysqli_query($conn, $sql); // First parameter is just return of "mysqli_connect()" function
     while ($row = mysqli_fetch_assoc($result)) { // Important line !!! Check summary get row on array ..
       $i = 0;
