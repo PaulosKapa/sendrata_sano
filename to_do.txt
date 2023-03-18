@@ -1,13 +1,8 @@
 !!!IMPORTANT!!!
-make it so that you cant add empty levels
-add description behind added element (i.e.: when you add blood level, you should add in the array the description of what it is that you add)
-add a new table that will have the serial number of the card (SID)
-add a new table that associates (SID) and (LID) ((TID))
-add a read rfid page
+add a new column to the level table that for the serial number of the nfc card (SID)
 
 !!SECONDARY!!
-add accounts (AID)
-add a new table that associates (TID) with (AID)
+add a new table that associates (SID) with (AID)
 add password protected read
 
 !STYLIZING!

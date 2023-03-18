@@ -51,6 +51,7 @@ for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
 
 //for how many levels there are
 for($i=0; $i<$contains_level; $i++){
+    echo $i;
     $new_array = [];
     //find the index of the current level in the array
     $level[$i] = '"'. "level" . strval($i).'"';
@@ -146,6 +147,10 @@ for($i=0; $i<$contains_level; $i++){
     }
 }
 
+session_start();
+$_SESSION['id'] = $last_id;
+$_COOKIE = [];
+mysqli_close($conn);
 //error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
