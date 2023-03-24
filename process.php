@@ -5,6 +5,8 @@ $i = 0;
 $repeat = array();
 //get the cookie from js
 $cookie = $_COOKIE['cname'];
+//get the sid cookie from js
+$sid = $_COOKIE['SID_name'];
 //make the cookie into an array with every character to have a specific position
 $trimmed = str_split($cookie);
 //get the size of that array
@@ -39,19 +41,34 @@ if (mysqli_connect_errno()) {
 $sql = "SHOW COLUMNS FROM test";
 $result = mysqli_query($conn,$sql);
 for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
-    //if the column is the LID skip
-    if($row['Field']==='LID'){}
+    //if the column is the LID or SID skip
+    if($row['Field']==='LID' or $row['Field'] == 'SID'){}
     else{
     $column = $row['Field'];
+    echo $column;
     }
-    if($o>0){
-        $repeat[$o-1] = $column;
+    if($o>1){
+        $repeat[$o-2] = $column;
     }    
 }
+//to insert the sid into the table
+$sql = "INSERT INTO test (SID) VALUES (?)";
+        //initialise the statement
+        $stmt = mysqli_stmt_init($conn);
+        //if cant prepare the statement
+        if ( ! mysqli_stmt_prepare($stmt, $sql)) {
+ 
+            die(mysqli_error($conn));
+        }
+        //bind parameters
+        mysqli_stmt_bind_param($stmt, "s", $sid);
+        //if you can execute the statement, then get the id of the column
+        if (mysqli_stmt_execute($stmt) === TRUE) {
+            $last_id = $conn->insert_id;
+        }
 
 //for how many levels there are
 for($i=0; $i<$contains_level; $i++){
-    echo $i;
     $new_array = [];
     //find the index of the current level in the array
     $level[$i] = '"'. "level" . strval($i).'"';
@@ -100,51 +117,23 @@ for($i=0; $i<$contains_level; $i++){
         }
         mysqli_stmt_execute($stmt);
         }
-     //in the first repetition
-     if($i==0){
-        //insert into the table
-        $sql = "INSERT INTO test ($pos)
-        VALUES (?)";
-        //initialise the statement
-        $stmt = mysqli_stmt_init($conn);
-        //if cant prepare the statement
-        if ( ! mysqli_stmt_prepare($stmt, $sql)) {
+    $sql = "UPDATE test SET $pos = ? WHERE LID = $last_id";
+    //initialise the statement
+    $stmt = mysqli_stmt_init($conn);
+    //if cant prepare the statement
+    if ( ! mysqli_stmt_prepare($stmt, $sql)) {
  
-            die(mysqli_error($conn));
-        }
-        //bind parameters
-        mysqli_stmt_bind_param($stmt, "s",
-                            $new_string
-        );
-        //if you can execute the statement, then get the id of the column
-        if (mysqli_stmt_execute($stmt) === TRUE) {
-            $last_id = $conn->insert_id;
-        }
-
-        //print if succesfull
-        echo "Record saved.";
+        die(mysqli_error($conn));
     }
-    //if it isn't the first repetition
-    else{
-        //update the table with the id from the first repetition
-        $sql = "UPDATE test SET $pos = ? WHERE LID = $last_id";
-        //initialise the statement
-        $stmt = mysqli_stmt_init($conn);
-        //if cant prepare the statement
-        if ( ! mysqli_stmt_prepare($stmt, $sql)) {
- 
-            die(mysqli_error($conn));
-        }
-        //bind parameters
-        mysqli_stmt_bind_param($stmt, "s",
-                            $new_string
-        );
-        //execute statement
-        mysqli_stmt_execute($stmt);
+    //bind parameters
+    mysqli_stmt_bind_param($stmt, "s",
+                        $new_string
+    );
+    //execute statement
+    mysqli_stmt_execute($stmt);
 
-        //print if succesfull
-        echo "Record saved.";
-    }
+    //print if succesfull
+    echo "Record saved.";
 }
 
 session_start();

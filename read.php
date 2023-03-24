@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <?php
-   session_start(); // this NEEDS TO BE AT THE TOP of the page before any output etc
-   $values_arr = array();
+  session_start(); // this NEEDS TO BE AT THE TOP of the page before any output etc
+  $SID = $_POST["sid"];
+  echo $SID;
+  $values_arr = array();
   //database connection
   $host = 'localhost';
   $dbname = "test";
@@ -59,20 +61,31 @@ $new_str = implode($trimmed);
     <title></title>
   </head>
   <body>    
-    <div id="demo" value="<?php echo "$new_str" ?>">
-    <div id="button">
-      <button id="button_clicker" onclick="show_message()">READ</button>
+    <div id="demo" value="<?php echo "$new_str" ?>"></div>
+    <div id="form">
+        <form action = "read.php" method="post">
+            <label id="sid_label" name ="sid"></label>
+            <button id="button_clicker" type="submit" onclick="get_sid(), show_message(); return false">READ</button>
+        </form>
     </div>
+    <div id="txt"></div>
   </body>
   <script>
+    //check fot the sid (replace with the raspberry pi code)
+    function get_sid(){
+      let text = prompt("SID");
+      let lbl = document.getElementById("sid_label");
+      let txt = document.createTextNode(text);
+      lbl.appendChild(txt)     
+    }
     //show the selected row after clicking the button
     function show_message() {
       //get the value of the demo
-      id_param = document.getElementById("demo").getAttribute('value');
+      let id_param = document.getElementById("demo").getAttribute('value');
       //id of button
-      button_click = document.getElementById("button");
+      let button_click = document.getElementById("txt");
       //create p element
-      text = document.createElement("p")
+      let text = document.createElement("p")
       //create text
       text_content = document.createTextNode(id_param);
       //put the text as a child of the p element

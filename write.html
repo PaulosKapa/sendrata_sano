@@ -318,7 +318,7 @@ function delete_text(){
 function choose(){
     //create a input tag and edit its attributes
     let input = document.createElement("textarea");
-    input.setAttribute("type", "text");
+    //input.setAttribute("type", "text");
     input.setAttribute("id", "item");
     input.setAttribute("name", "fname");
     input.setAttribute("value", "");
@@ -380,6 +380,7 @@ function drop_or_input_func(){
         drop_or_input = "input";
     }
 }
+
 //get the lists and turn them to arrays
 function submit_func(){
     //get element with id ol_list
@@ -420,7 +421,12 @@ function submit_func(){
             //}
         }
     }
-    document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+';' +"SameSite=Lax";
+    //replace with the raspberry pi code to get the serial number for the nfc card
+    let SID = prompt("SID");
+    //set the cookie for the info the user input
+    document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+ ';' +"SameSite=Lax";
+    //set the cookie for the SID
+    document.cookie = "SID_name=" + SID + ';' +"SameSite=Lax";
     console.log(document.cookie)
 }
 </script>
