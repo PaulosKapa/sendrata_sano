@@ -27,7 +27,7 @@
             </select>
         </div>
         <div id="text"></div>
-        <form action="process.php" method="post">
+        <form action="/sendrata_sano/php/process.php" method="post">
             <div id="ol_list"></div>
             <button onclick="submit_func()">SUBMIT</button>
         </form>
@@ -424,9 +424,9 @@ function submit_func(){
     //replace with the raspberry pi code to get the serial number for the nfc card
     let SID = prompt("SID");
     //set the cookie for the info the user input
-    document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+ ';' +"SameSite=Lax";
+    document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+ ';' + "SameSite=Lax" + ';' + "path=/";
     //set the cookie for the SID
-    document.cookie = "SID_name=" + SID + ';' +"SameSite=Lax";
+    document.cookie = "SID_name=" + SID + ';' +"SameSite=Lax"+ ';' + "path=/";
     console.log(document.cookie)
 }
 </script>

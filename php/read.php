@@ -1,8 +1,12 @@
 <!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+  </head>
 <?php
-  session_start(); // this NEEDS TO BE AT THE TOP of the page before any output etc
+if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+  //Form processing code here
   $SID = $_POST["sid"];
-  echo $SID;
   $values_arr = array();
   //database connection
   $host = 'localhost';
@@ -20,16 +24,16 @@
   for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
       //if the column is the LID skip
       //echo $row['Field'];
-      if($row['Field']==='LID'){}
+      if($row['Field']==='LID' or $row['Field'] === 'SID'){}
       else{
       $column = $row['Field'];
       }
-      if($o>0){
-          $repeat[$o-1] = $column;
+      if($o>1){
+          $repeat[$o-2] = $column;
       }    
   }
   
-  $sql = "SELECT * FROM `test` WHERE LID = $_SESSION[id]";
+  $sql = "SELECT * FROM `test` WHERE SID = $SID";
   $result = mysqli_query($conn, $sql); // First parameter is just return of "mysqli_connect()" function
   while ($row = mysqli_fetch_assoc($result)) { // Important line !!! Check summary get row on array ..
     $i = 0;
@@ -55,17 +59,20 @@
 }
 //turn that array back to a string
 $new_str = implode($trimmed);
+//print the outcome
+echo ' <div id = "demo">';
+echo '<p>';
+echo $new_str;
+echo '</p>';
+echo '</div>';
+}
 ?>
-<html>
-  <head>
-    <title></title>
-  </head>
+
   <body>    
-    <div id="demo" value="<?php echo "$new_str" ?>"></div>
     <div id="form">
-        <form action = "read.php" method="post">
-            <label id="sid_label" name ="sid"></label>
-            <button id="button_clicker" type="submit" onclick="get_sid(), show_message(); return false">READ</button>
+        <form action = "/sendrata_sano/php/read.php" method="post">
+            <input id="sid_label" name="sid" readonly="readonly">
+            <button id="button_clicker" type="submit" onclick="get_sid()">READ</button>
         </form>
     </div>
     <div id="txt"></div>
@@ -76,22 +83,22 @@ $new_str = implode($trimmed);
       let text = prompt("SID");
       let lbl = document.getElementById("sid_label");
       let txt = document.createTextNode(text);
-      lbl.appendChild(txt)     
+      lbl.setAttribute("value", "'" + text + "'");     
     }
     //show the selected row after clicking the button
-    function show_message() {
-      //get the value of the demo
-      let id_param = document.getElementById("demo").getAttribute('value');
-      //id of button
-      let button_click = document.getElementById("txt");
-      //create p element
-      let text = document.createElement("p")
-      //create text
-      text_content = document.createTextNode(id_param);
-      //put the text as a child of the p element
-      text.appendChild(text_content);
-      //put the p element as a child of the butto_click element
-      button_click.appendChild(text);
-    }
+    // function show_message() {
+    //   //get the value of the demo
+    //   let id_param = document.getElementById("demo").getAttribute('value');
+    //   //id of button
+    //   let button_click = document.getElementById("txt");
+    //   //create p element
+    //   let text = document.createElement("p")
+    //   //create text
+    //   text_content = document.createTextNode(id_param);
+    //   //put the text as a child of the p element
+    //   text.appendChild(text_content);
+    //   //put the p element as a child of the butto_click element
+    //   button_click.appendChild(text);
+    // }
   </script>
 </html>

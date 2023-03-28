@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+    session_start();
     $name = $_POST["name"];
     $user_password = $_POST["password"];
     if (!$name or !$user_password){
@@ -43,7 +44,9 @@
         }
     }
     if($user_password == $pass){
-        header("Location: /sendrata_sano/write.html");
+        $_SESSION['aid'] = $aid;
+        echo $_SESSION['aid'];
+        header("Location: /sendrata_sano/html/write.html");
         exit();
     }
     else{

@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <?php
+session_start();
 $j = 0;
 $i = 0;
 $repeat = array();
+$exists_already = false;
 //get the cookie from js
 $cookie = $_COOKIE['cname'];
 //get the sid cookie from js
@@ -36,7 +38,27 @@ $conn = mysqli_connect(hostname: $host, username: $username, password: $password
 if (mysqli_connect_errno()) {
   die("Connection failed: " . mysqli_connect_errno());
 }
+//check if the sid already exists If it does, dont add a new row to the general table
+$sql = "SELECT SID FROM test WHERE SID = '$sid'";
+$result = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($result);
+print_r($row);// { // Important line !!! Check summary get row on array ..
+    if($row == null){
+        $sql = "INSERT INTO general_table (SID, AID) VALUES (?,?)";
+        //initialise the statement
+        $stmt = mysqli_stmt_init($conn);
+        //if cant prepare the statement
+        if ( ! mysqli_stmt_prepare($stmt, $sql)) {
 
+            die(mysqli_error($conn));
+        }
+        //bind parameters
+        mysqli_stmt_bind_param($stmt, "ss", $sid, $_SESSION['aid']);
+        //if you can execute the statement
+        mysqli_stmt_execute($stmt);
+        $exists_already = false;
+        
+    }
 //code to see the columns from the table
 $sql = "SHOW COLUMNS FROM test";
 $result = mysqli_query($conn,$sql);
@@ -53,19 +75,19 @@ for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
 }
 //to insert the sid into the table
 $sql = "INSERT INTO test (SID) VALUES (?)";
-        //initialise the statement
-        $stmt = mysqli_stmt_init($conn);
-        //if cant prepare the statement
-        if ( ! mysqli_stmt_prepare($stmt, $sql)) {
+//initialise the statement
+$stmt = mysqli_stmt_init($conn);
+//if cant prepare the statement
+if ( ! mysqli_stmt_prepare($stmt, $sql)) {
  
-            die(mysqli_error($conn));
-        }
-        //bind parameters
-        mysqli_stmt_bind_param($stmt, "s", $sid);
-        //if you can execute the statement, then get the id of the column
-        if (mysqli_stmt_execute($stmt) === TRUE) {
-            $last_id = $conn->insert_id;
-        }
+    die(mysqli_error($conn));
+}
+//bind parameters
+mysqli_stmt_bind_param($stmt, "s", $sid);
+//if you can execute the statement, then get the id of the column
+if (mysqli_stmt_execute($stmt) === TRUE) {
+    $last_id = $conn->insert_id;
+}
 
 //for how many levels there are
 for($i=0; $i<$contains_level; $i++){
@@ -136,8 +158,6 @@ for($i=0; $i<$contains_level; $i++){
     echo "Record saved.";
 }
 
-session_start();
-$_SESSION['id'] = $last_id;
 $_COOKIE = [];
 mysqli_close($conn);
 //error reporting
