@@ -4,7 +4,7 @@ session_start();
 $j = 0;
 $i = 0;
 $repeat = array();
-$exists_already = false;
+$allow_write = false;
 //get the cookie from js
 $cookie = $_COOKIE['cname'];
 //get the sid cookie from js
@@ -29,7 +29,7 @@ $contains_level = substr_count($new_cookies, "level");
 $size = sizeof($array);
 //database connection
 $host = 'localhost';
-$dbname = "test";
+$dbname = "sendrata_sano";
 $username = "root";
 $password = "";
 // Create connection
@@ -39,7 +39,7 @@ if (mysqli_connect_errno()) {
   die("Connection failed: " . mysqli_connect_errno());
 }
 //check if the sid already exists If it does, dont add a new row to the general table
-$sql = "SELECT SID FROM test WHERE SID = '$sid'";
+$sql = "SELECT SID FROM levels WHERE SID = '$sid'";
 $result = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($result);
 print_r($row);// { // Important line !!! Check summary get row on array ..
@@ -56,11 +56,47 @@ print_r($row);// { // Important line !!! Check summary get row on array ..
         mysqli_stmt_bind_param($stmt, "ss", $sid, $_SESSION['aid']);
         //if you can execute the statement
         mysqli_stmt_execute($stmt);
-        $exists_already = false;
-        
+        //make sure the sid of the user is the same with the sid of the card so the user can't write to other cards
+        $duplicate_aid = $_SESSION['aid'];
+        $sql = "SELECT SID FROM general_table WHERE AID = $duplicate_aid";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        echo $sid;
+        echo $row['SID'];
+        if($row['SID']!=$sid){
+            $allow_write = false;
+        }
+        else{
+            $allow_write = true;
+        }            
+    } 
+    elseif($row!=null){
+        $sql = "SELECT AID FROM general_table WHERE SID = '$sid'";
+        $result = mysqli_query($conn, $sql);
+        $row = mysqli_fetch_assoc($result);
+        //only allow the user who initially wrote to tha sid to write this sid 
+        if ($row['AID'] != $_SESSION['aid']){
+            $allow_write = false;
+        }
+        else{
+            //make sure the sid of the user is the same with the sid of the card so the user can't write to other cards
+            $duplicate_aid = $_SESSION['aid'];
+            $sql = "SELECT SID FROM general_table WHERE AID = $duplicate_aid";
+            $result = mysqli_query($conn, $sql);
+            $row = mysqli_fetch_assoc($result);
+            echo $sid;
+            echo $row['SID'];
+            if($row['SID']!=$sid){
+                $allow_write = false;
+            }
+            else{
+                $allow_write = true;
+            }            
+        }        
     }
+if($allow_write == true){
 //code to see the columns from the table
-$sql = "SHOW COLUMNS FROM test";
+$sql = "SHOW COLUMNS FROM levels";
 $result = mysqli_query($conn,$sql);
 for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
     //if the column is the LID or SID skip
@@ -74,7 +110,7 @@ for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
     }    
 }
 //to insert the sid into the table
-$sql = "INSERT INTO test (SID) VALUES (?)";
+$sql = "INSERT INTO levels (SID) VALUES (?)";
 //initialise the statement
 $stmt = mysqli_stmt_init($conn);
 //if cant prepare the statement
@@ -132,14 +168,14 @@ for($i=0; $i<$contains_level; $i++){
     if($pos==$repeat[$i]){}
     else{
         //add a new column
-        $call = "ALTER TABLE test ADD $pos VARCHAR( 255 )";
+        $call = "ALTER TABLE levels ADD $pos VARCHAR( 255 )";
         $stmt = mysqli_stmt_init($conn);
         if( ! mysqli_stmt_prepare($stmt, $call)){
             die(mysqli_error($conn));
         }
         mysqli_stmt_execute($stmt);
         }
-    $sql = "UPDATE test SET $pos = ? WHERE LID = $last_id";
+    $sql = "UPDATE levels SET $pos = ? WHERE LID = $last_id";
     //initialise the statement
     $stmt = mysqli_stmt_init($conn);
     //if cant prepare the statement
@@ -157,11 +193,16 @@ for($i=0; $i<$contains_level; $i++){
     //print if succesfull
     echo "Record saved.";
 }
-
+}
+else{
+    echo "Change account";
+}
 $_COOKIE = [];
 mysqli_close($conn);
 //error reporting
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+header("Location: /sendrata_sano/html/choose.html");
+exit();
 ?>

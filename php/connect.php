@@ -8,7 +8,7 @@
     }
     //database connection
     $host = 'localhost';
-    $dbname = "test";
+    $dbname = "sendrata_sano";
     $username = "root";
     $password = "";
     $aid;
@@ -46,7 +46,7 @@
     if($user_password == $pass){
         $_SESSION['aid'] = $aid;
         echo $_SESSION['aid'];
-        header("Location: /sendrata_sano/html/write.html");
+        header("Location: /sendrata_sano/html/choose.html");
         exit();
     }
     else{

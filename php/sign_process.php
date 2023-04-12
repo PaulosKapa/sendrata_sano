@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <?php
+    session_start();
+    $allow_make = false;
     $name = $_POST["name"];
     $user_password = $_POST["password"];
     $attribute = filter_input(INPUT_POST, "sub_option", FILTER_VALIDATE_INT);
@@ -8,7 +10,7 @@
     }
     //database connection
     $host = 'localhost';
-    $dbname = "test";
+    $dbname = "sendrata_sano";
     $username = "root";
     $password = "";
     // Create connection
@@ -17,6 +19,18 @@
     if (mysqli_connect_errno()) {
         die("Connection failed: " . mysqli_connect_errno());
     }
+$sql = "SELECT user_name FROM accounts";
+$result = mysqli_query($conn, $sql);
+for($o=0; $o<$row = mysqli_fetch_assoc($result); $o++){
+    if($name == $row["user_name"]){
+        $allow_make = false;
+    }
+    else{
+        $allow_make = true;
+    }
+}
+
+if($allow_make == true){
     //insert into the table
     $sql = "INSERT INTO accounts (user_name, user_password, attribute) VALUES (?,?,?)";
     //initialise the statement
@@ -32,6 +46,18 @@
         //print if succesfull
         echo "Record saved.";
     }
-
+    $sql = "SELECT AID FROM accounts WHERE user_name = '$name'";
+    $result = mysqli_query($conn, $sql);
+    for($o=0; $o<$row = mysqli_fetch_assoc($result); $o++){
+        $_SESSION['aid'] = $row['AID'];
+    }
+    header("Location: /sendrata_sano/html/choose.html");
+    exit();
+}
+else{
+    echo "Change name";
+    header("Location: /sendrata_sano/html/sign_up.html");
+    exit();
+}
     
 ?>

@@ -4,13 +4,18 @@
     <title></title>
   </head>
 <?php
+session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
   //Form processing code here
   $SID = $_POST["sid"];
+  $name = $_SESSION["aid"];
   $values_arr = array();
+  $attribute;
+  $level_reach;
+  $new_trimmed_str = "";
   //database connection
   $host = 'localhost';
-  $dbname = "test";
+  $dbname = "sendrata_sano";
   $username = "root";
   $password = "";
   // Create connection
@@ -19,33 +24,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
   if (mysqli_connect_errno()) {
     die("Connection failed: " . mysqli_connect_errno());
   }
-  $sql = "SHOW COLUMNS FROM test";
+  //this will execute only if the user has an account
+  if($name != null){
+  $sql = "SELECT attribute FROM `accounts` WHERE AID = $name";
+  $result = mysqli_query($conn, $sql);
+  while ($row = mysqli_fetch_assoc($result)) { // Important line !!! Check summary get row on array ..
+    $i = 0;
+      foreach ($row as $field => $value) { // I you want you can right this line like this: foreach($row as $value) {
+        //get every value in an index 
+        $attribute = $value;
+        $i++;
+      }
+  }
+}
+  //this will execute if the user doesn't have an account
+  if($name == null){
+    $attribute = 1;
+  }
+  $sql = "SHOW COLUMNS FROM levels";
   $result = mysqli_query($conn,$sql);
   for($o=0; $o<$row = mysqli_fetch_array($result); $o++){
       //if the column is the LID skip
       //echo $row['Field'];
       if($row['Field']==='LID' or $row['Field'] === 'SID'){}
       else{
-      $column = $row['Field'];
+            $column = $row['Field'];
       }
       if($o>1){
           $repeat[$o-2] = $column;
-      }    
+      }
+      
   }
-  
-  $sql = "SELECT * FROM `test` WHERE SID = $SID";
+
+ 
+  $sql = "SELECT * FROM `levels` WHERE SID = $SID";
   $result = mysqli_query($conn, $sql); // First parameter is just return of "mysqli_connect()" function
   while ($row = mysqli_fetch_assoc($result)) { // Important line !!! Check summary get row on array ..
     $i = 0;
       foreach ($row as $field => $value) { // I you want you can right this line like this: foreach($row as $value) {
         //get every value in an index 
+        if($attribute == 1){
+          if(str_contains($value, 'level0')){
+          $values_arr[$i] = $value;
+        }
+      }
+      else if(str_contains($value, 'level')){
         $values_arr[$i] = $value;
+      }
         $i++;
-
-          //echo $value; // I just did not use "htmlspecialchars()" function. 
       }
   }
-
   //make the array into a string
   $values_str = implode($values_arr);
   //turn that string back to an array
@@ -57,12 +85,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $trimmed[$j]=' ';
     }   
 }
+
 //turn that array back to a string
 $new_str = implode($trimmed);
+//remove "level" from string
+for ($s = 0; $s<sizeof($values_arr); $s++){
+  $trimmed_array = [];
+  //get the level of the repetition
+  $level_str = "level".$s;
+  //for the first repetition check if there is level 0 and replace it with space
+  if(str_contains($new_str, $level_str) && $s == 0){
+    $trimmed_array[$s] = str_replace($level_str, "", $new_str);
+  }
+  //for the rest repetitions check if there is level[$s] and replace it with a breakline
+  elseif(str_contains($new_trimmed_str, $level_str) && $s > 0){
+    $trimmed_array[$s] = str_replace($level_str, "<br/>", $new_trimmed_str);
+  }
+  //make the array to a string
+  $new_trimmed_str = $trimmed_array[$s]; 
+}
 //print the outcome
-echo ' <div id = "demo">';
+echo '<div id = "demo">';
 echo '<p>';
-echo $new_str;
+echo $new_trimmed_str;
 echo '</p>';
 echo '</div>';
 }
