@@ -1,10 +1,1 @@
-!!!IMPORTANT!!!
-add a new column to the level table that for the serial number of the nfc card (SID)
-
-!!SECONDARY!!
-add a new table that associates (SID) with (AID)
-add password protected read
-
-!STYLIZING!
-add css
-add how to use page
+to do: add user and sid deletion check that sid is not empty make the sid from the json file equal to zero after reading
