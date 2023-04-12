@@ -7,14 +7,14 @@
         die("please enter a name and a password");
     }
     //database connection
-    $host = 'localhost';
+    $host = "localhost";
     $dbname = "sendrata_sano";
     $username = "user";
     $password = "1813";
     $aid;
     $pass;
     // Create connection
-    $conn = mysqli_connect(hostname: $host, username: $username, password: $password, database: $dbname);
+    $conn = mysqli_connect($host,$username,$password,$dbname);
     // Check connection
     if (mysqli_connect_errno()) {
         die("Connection failed: " . mysqli_connect_errno());

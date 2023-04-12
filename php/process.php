@@ -28,12 +28,12 @@ $contains_level = substr_count($new_cookies, "level");
 //get the size of the array
 $size = sizeof($array);
 //database connection
-$host = 'localhost';
+$host = "localhost";
 $dbname = "sendrata_sano";
 $username = "user";
 $password = "1813";
 // Create connection
-$conn = mysqli_connect(hostname: $host, username: $username, password: $password, database: $dbname);
+$conn = mysqli_connect($host,$username,$password,$dbname);
 // Check connection
 if (mysqli_connect_errno()) {
   die("Connection failed: " . mysqli_connect_errno());
@@ -192,9 +192,14 @@ for($i=0; $i<$contains_level; $i++){
 
     //print if succesfull
     echo "Record saved.";
+    header("Location: /sendrata_sano/html/choose.html");
+    exit();
+
 }
 }
-else{
+else{ 
+   header("Location: /sendrata_sano/html/write.html");
+   exit();
     echo "Change account";
 }
 $_COOKIE = [];
@@ -203,6 +208,4 @@ mysqli_close($conn);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-header("Location: /sendrata_sano/html/choose.html");
-exit();
 ?>

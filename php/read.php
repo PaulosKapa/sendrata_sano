@@ -14,12 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
   $level_reach;
   $new_trimmed_str = "";
   //database connection
-  $host = 'localhost';
+  $host = "localhost";
   $dbname = "sendrata_sano";
   $username = "user";
   $password = "1813";
   // Create connection
-  $conn = mysqli_connect(hostname: $host, username: $username, password: $password, database: $dbname);
+  $conn = mysqli_connect($host,$username,$password,$dbname);
   // Check connection
   if (mysqli_connect_errno()) {
     die("Connection failed: " . mysqli_connect_errno());
@@ -64,11 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
       foreach ($row as $field => $value) { // I you want you can right this line like this: foreach($row as $value) {
         //get every value in an index 
         if($attribute == 1){
-          if(str_contains($value, 'level0')){
+          if(strpos($value, 'level0')!==false){
           $values_arr[$i] = $value;
         }
       }
-      else if(str_contains($value, 'level')){
+      else if(strpos($value, 'level')!==false){
         $values_arr[$i] = $value;
       }
         $i++;
@@ -94,11 +94,11 @@ for ($s = 0; $s<sizeof($values_arr); $s++){
   //get the level of the repetition
   $level_str = "level".$s;
   //for the first repetition check if there is level 0 and replace it with space
-  if(str_contains($new_str, $level_str) && $s == 0){
+  if(strpos($new_str, $level_str)!==false && $s == 0){
     $trimmed_array[$s] = str_replace($level_str, "", $new_str);
   }
   //for the rest repetitions check if there is level[$s] and replace it with a breakline
-  elseif(str_contains($new_trimmed_str, $level_str) && $s > 0){
+  elseif(strpos($new_trimmed_str, $level_str)!==false && $s > 0){
     $trimmed_array[$s] = str_replace($level_str, "<br/>", $new_trimmed_str);
   }
   //make the array to a string
@@ -120,15 +120,27 @@ echo '</div>';
             <button id="button_clicker" type="submit" onclick="get_sid()">READ</button>
         </form>
     </div>
-    <div id="txt"></div>
+    <div id="back">
+      <a href="/sendrata_sano/html/choose.html"><button>BACK</button></a>
+    </div>
   </body>
   <script>
+    let data_id;
+    //get the sid from a json file and then stringify it
+    async function raspi_sid(){
+     const res = await fetch("../files/file.json")
+     data_id = await res.json();
+     let data_id_str = JSON.stringify(data_id)
+     let data_id_new_str = data_id_str.replace('{"id":', "")
+      data_id = data_id_new_str.replace('}', "")
+	console.log(data_id)
+    }
+	raspi_sid()
     //check fot the sid (replace with the raspberry pi code)
     function get_sid(){
-      let text = prompt("SID");
-      let lbl = document.getElementById("sid_label");
-      let txt = document.createTextNode(text);
-      lbl.setAttribute("value", "'" + text + "'");     
+     
+	 let lbl = document.getElementById("sid_label");
+      lbl.setAttribute("value", "'" + data_id + "'");     
     }
     //show the selected row after clicking the button
     // function show_message() {

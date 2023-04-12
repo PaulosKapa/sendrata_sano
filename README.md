@@ -1,1 +1,0 @@
-# sendrata_sano

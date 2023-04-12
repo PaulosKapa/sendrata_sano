@@ -35,6 +35,17 @@
     </div>
 </body>
 <script>
+    var data_id;
+    //get the sid from a json file and then stringify it
+    async function raspi_sid(){
+     const res = await fetch("../files/file.json")
+     data_id = await res.json();
+     let data_id_str = JSON.stringify(data_id)
+     let data_id_new_str = data_id_str.replace('{"id":', "")
+      data_id = data_id_new_str.replace('}', "")
+      console.log(data_id)
+    }
+    raspi_sid()
     //check how many levels we have
     var lvl = 0;
     //make a new array
@@ -421,12 +432,10 @@ function submit_func(){
             //}
         }
     }
-    //replace with the raspberry pi code to get the serial number for the nfc card
-    let SID = prompt("SID");
     //set the cookie for the info the user input
     document.cookie = "cname=" + JSON.stringify(ArrayOfAllFoundVariables)+ ';' + "SameSite=Lax" + ';' + "path=/";
     //set the cookie for the SID
-    document.cookie = "SID_name=" + SID + ';' +"SameSite=Lax"+ ';' + "path=/";
+    document.cookie = "SID_name=" + data_id + ';' +"SameSite=Lax"+ ';' + "path=/";
     console.log(document.cookie)
 }
 </script>
