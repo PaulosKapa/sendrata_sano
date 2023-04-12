@@ -2,6 +2,7 @@
 <html>
   <head>
     <title></title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.0/full/pyodide.js"></script>
   </head>
 <?php
 session_start();
@@ -120,15 +121,33 @@ echo '</div>';
             <button id="button_clicker" type="submit" onclick="get_sid()">READ</button>
         </form>
     </div>
-    <div id="txt"></div>
+    <div id="back">
+      <a href="/sendrata_sano/html/choose.html"><button>BACK</button></a>
+    </div>
   </body>
   <script>
+    let data_id;
+    //get the sid from a json file and then stringify it
+    async function raspi_sid(){
+     const res = await fetch("../file.json")
+     data_id = await res.json();
+     let data_id_str = JSON.stringify(data_id)
+     let data_id_new_str = data_id_str.replace('{"id":', "")
+      data_id = data_id_new_str.replace('}', "")
+    }
+    raspi_sid()
+    //.then(Response => Response.json())
+    //.then(data => data_id = data.id)
+    //.then(()=>{console.log(data_id)});
     //check fot the sid (replace with the raspberry pi code)
     function get_sid(){
-      let text = prompt("SID");
-      let lbl = document.getElementById("sid_label");
-      let txt = document.createTextNode(text);
-      lbl.setAttribute("value", "'" + text + "'");     
+
+      //get sid with the keyboard
+    //  let text = prompt("SID");
+         let lbl = document.getElementById("sid_label");
+//      let txt = document.createTextNode(text);
+
+      lbl.setAttribute("value", "'" + data_id + "'");     
     }
     //show the selected row after clicking the button
     // function show_message() {

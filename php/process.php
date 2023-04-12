@@ -192,10 +192,14 @@ for($i=0; $i<$contains_level; $i++){
 
     //print if succesfull
     echo "Record saved.";
+    header("Location: /sendrata_sano/html/choose.html");
+    exit();
 }
 }
 else{
     echo "Change account";
+    header("Location: /sendrata_sano/html/write.html");
+    exit();
 }
 $_COOKIE = [];
 mysqli_close($conn);
@@ -203,6 +207,5 @@ mysqli_close($conn);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-header("Location: /sendrata_sano/html/choose.html");
-exit();
+
 ?>
