@@ -16,8 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
   //database connection
   $host = 'localhost';
   $dbname = "sendrata_sano";
-  $username = "root";
-  $password = "";
+  $username = "user";
+  $password = "1813";
   // Create connection
   $conn = mysqli_connect(hostname: $host, username: $username, password: $password, database: $dbname);
   // Check connection

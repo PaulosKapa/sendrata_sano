@@ -9,8 +9,8 @@
     //database connection
     $host = 'localhost';
     $dbname = "sendrata_sano";
-    $username = "root";
-    $password = "";
+    $username = "user";
+    $password = "1813";
     $aid;
     $pass;
     // Create connection
